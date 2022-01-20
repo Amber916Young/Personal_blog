@@ -1,0 +1,48 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:replace="~{fragments/header :: header}"></head>
+
+<body>
+<div>
+    <div th:replace="~{fragments/navigation :: navigation}"></div>
+    <div style="background-image:url(&quot;https://uploads-ssl.webflow.com/60e2b7f8e2f47727f1b95d0d/60e2b7f8e2f4771a54b95d79_photo-1437846972679-9e6e537be46e.jpg&quot;)"
+         class="inner-hero">
+        <div class="hero-wrapper w-container">
+<!--            <div class="view-all">Showing all posts in</div>-->
+            <h1 class="hero-header" th:text="${type}"></h1></div>
+        <div class="dark-overlay"></div>
+    </div>
+    <div class="main-section">
+        <div class="w-container">
+            <div class="w-dyn-list">
+                <div role="list" class="w-clearfix w-dyn-items w-row">
+                    <th:block  th:each="item,stat:${articleList}">
+                        <div role="listitem" class="blog-thumbnail w-dyn-item w-col w-col-4">
+                            <a th:href="@{${ '/view/detail/id/'+item?.id+'/catrgory/'+item?.memo}}"  class="thumbnail-wrapper w-inline-block">
+                                <div class="image-wrapper">
+                                    <div th:style="'background-image:url(' +  @{${item?.cover_url}} + ');'"
+                                         class="thumbnail-image"></div>
+                                </div>
+                                <div class="thumbnail-text">
+                                    <div class="blog-title" th:text="${item?.title}"></div>
+                                    <div class="preview-text" th:text="${item?.detail}"></div>
+                                </div>
+                                <div class="thumb-details w-clearfix">
+                                    <img th:src="@{${item?.avatar}}" alt="" class="author-img">
+                                    <div class="author-title" th:text="${item?.author}"></div>
+                                    <div class="thumbnail-date"  th:text="${ #strings.substring(item?.publish_time,0,10)}"></div>
+                                </div>
+                            </a>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

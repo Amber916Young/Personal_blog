@@ -1,0 +1,19 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yang.mapper.slave.FileMapper">
+    <insert id="insertFile" parameterType="com.yang.entity.FileRecode">
+        insert into yyjblog.file_record (fileType, fileName,
+                                     fileUrl, mineType,
+                                     originalName,
+                                     upload_time,directory,aid)
+        values (#{fileType},
+                #{fileName},
+                #{fileUrl},
+                #{mineType},
+                #{originalName},
+                #{upload_time},#{directory},#{aid})
+    </insert>
+
+
+</mapper>

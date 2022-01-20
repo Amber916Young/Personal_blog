@@ -1,0 +1,184 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yang.mapper.slave.WebApiMapper">
+    <insert id="articleUpload" parameterType="hashmap">
+        insert into yyjblog.article (id,title, author, type,
+                                     create_time, publish_time,
+                                     content, cover_url, status,category,detail)
+        values (#{id},
+                #{title},
+                #{author},
+                #{type},
+                #{create_time},
+                #{publish_time},
+                #{content},
+                #{cover_url},
+                #{status},
+                #{category},
+                #{detail}
+                )
+    </insert>
+    <insert id="tags_articleAdd" parameterType="hashmap">
+        insert into yyjblog.tags_article (tid, aid)
+        values(#{tid},#{aid})
+    </insert>
+
+
+    <update id="articleEdit" parameterType="hashmap">
+        update  yyjblog.article
+        <trim prefix="set" suffixOverrides=",">
+            <if test="title!=null">title=#{title},</if>
+            <if test="detail!=null">detail=#{detail},</if>
+            <if test="author!=null">author=#{author},</if>
+            <if test="title!=null">type=#{type},</if>
+            <if test="publish_time!=null">publish_time=#{publish_time},</if>
+            <if test="content!=null">content=#{content},</if>
+            <if test="cover_url!=null">cover_url=#{cover_url},</if>
+            <if test="status!=null">status=#{status},</if>
+        </trim>
+        where id=#{id}
+    </update>
+    <update id="editTags"  parameterType="hashmap">
+        update  yyjblog.tags
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name!=null">name=#{name},</if>
+            <if test="label!=null">label=#{label},</if>
+        </trim>
+        where id=#{id}
+    </update>
+    <insert id="addTags">
+        insert into yyjblog.tags(name,label) values(#{name},#{label})
+    </insert>
+    <select id="articleQueryAll"  resultType="java.util.HashMap">
+        select * from yyjblog.article
+        <where>
+            1=1
+            <if test="keywords !=''">
+                and  concat(
+                IFNULL(author,'')
+                ,IFNULL(title,'')
+                ,IFNULL(type,'')
+                ,IFNULL(content,''))
+                like concat('%', #{keywords}, '%')
+            </if>
+            <if test="category !=''">
+                and category=#{category}
+            </if>
+        </where>
+    </select>
+    <delete id="deleteArticleTags">
+        delete FROM yyjblog.tags_article where id=#{id}
+    </delete>
+    <select id="articleTagsQueryAll"  resultType="java.util.HashMap">
+        select * from yyjblog.view_article_tags
+        <where>
+            1=1
+            <if test="keywords !=''">
+                and  concat(
+                IFNULL(name,'')
+                ,IFNULL(category,'')
+                ,IFNULL(type,'')
+                ,IFNULL(title,''))
+                like concat('%', #{keywords}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="articleQueryById"  parameterType="hashmap" resultType="hashmap">
+        select * from yyjblog.article
+        <where>
+            1=1
+            <if test="id !=null">
+                and   id=#{id}
+            </if>
+            <if test="category !=null">
+                and   category=#{category}
+            </if>
+        </where>
+    </select>
+
+    <select id="tagsQueryAllCount" parameterType="com.yang.utils.Page" resultType="int">
+        select count(1) from yyjblog.article
+        <where>
+            1=1
+            <if test="keywords !=null">
+                and   concat(
+                IFNULL(name,'')
+                )
+                like concat('%', #{keywords}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="tagsQueryAllPage" parameterType="hashmap" resultType="java.util.HashMap">
+        select * from yyjblog.tags
+        <where>
+            1=1
+            <if test="keywords !=null">
+                and  concat(
+                IFNULL(name,'')
+              )
+                like concat('%', #{keywords}, '%')
+            </if>
+        </where>
+    </select>
+    <select id="tagsQueryAll" resultType="java.util.HashMap">
+        select * from yyjblog.tags
+    </select>
+    <delete id="deleteTags">
+        delete FROM yyjblog.tags where id=#{id}
+    </delete>
+    <select id="tags_articleQuery" resultType="java.util.HashMap" parameterType="hashmap">
+        select * from  yyjblog.tags_article
+        <where>
+            1=1
+            <if test="aid !=null">
+                and   aid=#{aid}
+            </if>
+            <if test="tid !=null">
+                and   tid=#{tid}
+            </if>
+        </where>
+    </select>
+    <select id="tags_articleQuery2" resultType="java.util.HashMap" parameterType="int">
+        select * from  yyjblog.tags where id in (select tid from  yyjblog.tags_article  where  aid=#{id})
+    </select>
+    <select id="typesQueryAll" resultType="java.util.HashMap">
+        select * from yyjblog.types
+    </select>
+    <select id="file_recordQuery" resultType="java.util.HashMap">
+        select * from yyjblog.file_record where aid=#{id}
+    </select>
+    <select id="file_recordQueryMap" resultType="java.util.HashMap">
+        select * from yyjblog.file_record
+        <where>
+            1=1
+            <if test="aid !=null">
+                and aid=#{aid}
+            </if>
+            <if test="directory !=null">
+                and directory=#{directory}
+            </if>
+            <if test="fileUrl !=null">
+                and fileUrl=#{fileUrl}
+            </if>
+            <if test="fileName !=null">
+                and fileName=#{fileName}
+            </if>
+            <if test="id !=null">
+                and id=#{id}
+            </if>
+        </where>
+    </select>
+    <select id="mediaInfoQuery" resultType="java.util.HashMap">
+        select * from yyjblog.media
+        <where>
+            1=1
+            <if test="type !=null">
+                and type=#{type}
+            </if>
+        </where>
+    </select>
+
+</mapper>

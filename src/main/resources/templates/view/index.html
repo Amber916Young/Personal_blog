@@ -1,0 +1,311 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:replace="~{fragments/header :: header}"></head>
+<style>
+    .blog-thumbnail{
+        margin: 1em;
+    }
+    .category-section .category-link p{
+        margin: auto;
+    }
+    .category-section .w-dyn-items{
+        justify-content: center;
+        display: flex;
+    }
+</style>
+<body>
+<div>
+    <div th:replace="~{fragments/navigation :: navigation}"></div>
+
+    <div class="hero-section">
+        <div class="hero-content w-container">
+            <div style="transform: translate3d(0px, 0px, 0px)
+            scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); opacity: 1;
+            transform-style: preserve-3d;"
+                 class="hero-heading" >
+            </div>
+            <div style="opacity: 1; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;"
+                 class="hero-subheading">
+
+            </div>
+            <a href="#Latest-post" style="opacity: 1;" class=""></a></div>
+    </div>
+    <div class="category-section">
+        <div class="w-container">
+            <div class="w-dyn-list">
+                <div role="list" class="w-clearfix w-dyn-items w-row">
+                    <div role="listitem" class="category-wrapper w-dyn-item w-col w-col-2">
+                        <a href="/categories/type/photography" class="category-link">
+                            <p >摄影</p>
+                            <p>Photography</p>
+                        </a>
+                    </div>
+                    <div role="listitem" class="category-wrapper w-dyn-item w-col w-col-2">
+                        <a href="/categories/type/lifestyle" class="category-link">
+                            <p>生活</p>
+                            <p>lifestyle</p>
+                        </a>
+                    </div>
+                    <div role="listitem" class="category-wrapper w-dyn-item w-col w-col-2">
+                        <a href="/categories/type/travel" class="category-link">
+                            <p>旅行</p>
+                            <p>vacation</p>
+                        </a>
+                    </div>
+                    <div role="listitem" class="category-wrapper w-dyn-item w-col w-col-2">
+                        <a href="/categories/type/code" class="category-link">
+                            <p>代码</p>
+                            <p>code</p>
+                        </a>
+                    </div>
+                    <div role="listitem" class="category-wrapper w-dyn-item w-col w-col-2">
+                        <a  href="/categories/type/adventure" class="category-link">
+                            <p>冒险</p>
+                            <p>adventure</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="posts" class="main-section bottom-padding">
+        <div id="Latest-post" class="w-container">
+            <div class="section-heading">
+                <h2 class="section-title">
+                    推荐
+                </h2>
+                <p>Featured Posts</p>
+                <div class="med-divider"></div>
+            </div>
+            <div class="w-dyn-list">
+                <div role="list" class="w-clearfix w-dyn-items w-row" id="recommendList">
+                </div>
+            </div>
+        </div>
+
+        <div class="w-container" style="max-width: 85%">
+            <div class="w-col w-col-12">
+                <div class="section-heading">
+                    <h2 class="section-title">近期</h2>
+                    <p>Most Recent</p>
+                    <div class="med-divider"></div>
+                </div>
+                <div class=" w-dyn-list">
+                    <div role="list" style="display: flex;flex-wrap: wrap;justify-content: center;" class="w-clearfix w-dyn-items w-row   w-col w-col-12 " id="articleList">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <style>
+            .photo_warp{
+                margin: 0.4em;
+                /*width: calc(100%/3 - 20px);*/
+                break-inside: avoid;
+
+            }
+            .photo_warp img{
+                width: 100%;
+                height:auto;
+            }
+            .photoList{
+                /*display: flex;*/
+                /*flex-flow:column wrap;*/
+                /*height: 100vh;*/
+                column-count: 3;
+                width: 87%;
+                text-align: center;
+                margin: auto;
+
+            }
+        </style>
+<!--        <div class="w-container" style="max-width: 100%" >-->
+<!--            <div style="height: 10em;width: 100%;margin-bottom: 4em;background-color: #093426"></div>-->
+<!--            <div class="photoList" >-->
+<!--                <div class="photo_warp">-->
+<!--                    <img src="/img/1.jpeg"-->
+<!--                         loading="lazy"-->
+<!--                         srcset="/img/1.jpeg"-->
+<!--                         alt="" class="" />-->
+<!--                </div>-->
+<!--                <div class="photo_warp">-->
+<!--                    <img src="/img/2.jpeg"-->
+<!--                         loading="lazy"-->
+<!--                         srcset="/img/2.jpeg"-->
+<!--                         alt="" class="" />-->
+<!--                </div>-->
+<!--                <div class="photo_warp">-->
+<!--                    <img src="/img/3.jpeg"-->
+<!--                         loading="lazy"-->
+<!--                         srcset="/img/3.jpeg"-->
+<!--                         alt="" class="" />-->
+<!--                </div>-->
+<!--                <div class="photo_warp">-->
+<!--                    <img src="/img/3.jpeg"-->
+<!--                         loading="lazy"-->
+<!--                         srcset="/img/3.jpeg"-->
+<!--                         alt="" class="" />-->
+<!--                </div>-->
+<!--                <div class="photo_warp">-->
+<!--                    <img src="/img/3.jpeg"-->
+<!--                         loading="lazy"-->
+<!--                         srcset="/img/3.jpeg"-->
+<!--                         alt="" class="" />-->
+<!--                </div>-->
+
+<!--                <div class="photo_warp">-->
+<!--                    <img src="/img/index/headp.jpg"-->
+<!--                         loading="lazy"-->
+<!--                         srcset="/img/index/headp.jpg"-->
+<!--                         alt="" class="" />-->
+<!--                </div>-->
+<!--                <div class="photo_warp">-->
+<!--                    <img src="/img/index/headp.jpg"-->
+<!--                         loading="lazy"-->
+<!--                         srcset="/img/index/headp.jpg"-->
+<!--                         alt="" class="" />-->
+<!--                </div>-->
+<!--            </div>-->
+
+
+<!--        </div>-->
+
+    </div>
+
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script>
+        loadArticle();
+        setTimeout(function() {
+            loadRecommod();
+        }, 300);
+        // setTimeout(function() {
+        //     // loadPhoto();
+        // }, 800);
+        function loadArticle(){
+            var jsonData={};
+            jsonData["pageno"]=1;
+            jsonData["keyWord"]="all";
+            var params = JSON.stringify(jsonData);
+            var url = "/view/article/index/query";
+            ajaxPost(url, params, function (data) {
+                console.info(data);
+                if (data.code == 200) {
+                    layer.msg("查询成功", {time: 3000, icon: 1});
+                    var tableContent = "";
+                    $.each(data.data,function(i,item){
+                        // var content =  richTest(item.content);
+                        tableContent +=' <div role="listitem" class="blog-thumbnail w-dyn-item w-col w-col-3">\n' +
+                            '                                <a href="/view/detail/id/'+item.id+'/category/'+item.category+'" data-w-id="a_'+item.id+'"\n' +
+                            '                                   class="thumbnail-wrapper w-inline-block">\n' +
+                            '                                    <div class="image-wrapper">\n' +
+                            '                                        <div style="background-image: url('+item.cover_url+'); transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;"\n' +
+                            '                                             class="thumbnail-image"></div>\n' +
+                            '                                            <div style="'+item.t_label+'" class="category-tag">'+item.t_name+'</div>\n' +
+                            '                                    </div>\n' +
+                            '                                    <div class="thumbnail-text">\n' +
+                            '                                        <div class="blog-title">'+item.title+'</div>\n' +
+                            '                                        <div class="preview-text">'+item.detail.substr(0,20)+'...</div>\n' +
+                            '                                    </div>\n' +
+                            '                                    <div class="thumb-details w-clearfix"><img\n' +
+                            '                                            src="'+item.avatar+'"\n' +
+                            '                                            alt="" class="author-img">\n' +
+                            '                                        <div class="author-title">'+item.author+'</div>\n' +
+                            '                                        <div class="thumbnail-date">'+item.publish_time.substr(0,10)+'</div>\n' +
+                            '                                    </div>\n' +
+                            '                                </a>\n' +
+                            '                            </div>';
+
+
+                    });
+                    $("#articleList").html(tableContent)
+                } else {
+                    layer.open({
+                        title: '查询失败'
+                        ,content:data.msg
+                    });
+                    // layer.msg(data.msg, {time: 3000, icon: 5});
+                    return;
+                }
+            });
+        }
+
+        function loadRecommod(){
+            var url = "/view/article/index/recommend/query";
+            ajaxPost(url,"", function (data) {
+                if (data.code == 200) {
+                    layer.msg("查询成功", {time: 3000, icon: 1});
+                    var tableContent = "";
+                    $.each(data.data,function(i,item){
+                        // var content =  richTest(item.content);
+                        tableContent +=' <div role="list" class="w-clearfix w-dyn-items w-row" id="recommendList">\n' +
+                            '                    <div role="listitem" class="featuredthumbnail w-dyn-item w-col w-col-6">\n' +
+                            '                        <a\n' +
+                            '                            href="/view/detail/id/'+item.id+'/category/'+item.category+'" data-w-id="'+item.id+'"\n' +
+                            '                            class="featured-wrapper w-inline-block">\n' +
+                            '                        <div>\n' +
+                            '                            <div style="'+item.t_label+'" class="category-tag-2">'+item.t_name+'</div>\n' +
+                            '                            <div style="background-image: url('+item.cover_url+'); transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;"\n' +
+                            '                                 class="featured-image"></div>\n' +
+                            '                        </div>\n' +
+                            '                        <div class="featured-text">\n' +
+                            '                            <div class="featured-title">'+item.title+'</div>\n' +
+                            '                            <div class="featured-description">'+item.detail.substr(0,20)+'...</div>\n' +
+                            '                            <div class="featured-details">\n' +
+                            '                                <div class="w-clearfix"><img\n' +
+                            '                                        src="'+item.avatar+'"\n' +
+                            '                                        alt="" class="author-img">\n' +
+                            '                                    <div class="author-title lite">'+item.author+'</div>\n' +
+                            '                                    <div class="thumbnail-date lite">'+item.publish_time.substr(0,10)+'</div>\n' +
+                            '                                </div>\n' +
+                            '                            </div>\n' +
+                            '                        </div>\n' +
+                            '                        </a>\n' +
+                            '                    </div>';
+
+
+                    });
+                    $("#recommendList").html(tableContent)
+                } else {
+                    layer.open({
+                        title: '查询失败'
+                        ,content:data.msg
+                    });
+                    return;
+                }
+            });
+        }
+
+        function loadPhoto(){
+            var jsonData={};
+            jsonData["pageno"]=1;
+            jsonData["keyWord"]="all";
+            var params = JSON.stringify(jsonData);
+            var url = "/view/photo/index/query";
+            ajaxPost(url, params, function (data) {
+                console.info(data);
+                if (data.code == 200) {
+                    layer.msg("查询成功", {time: 3000, icon: 1});
+                    var tableContent = "";
+                    $.each(data.data,function(i,item){
+                        // var content =  richTest(item.content);
+                        tableContent +='';
+
+
+                    });
+                    $("#articleList").html(tableContent)
+                } else {
+                    layer.open({
+                        title: '查询失败'
+                        ,content:data.msg
+                    });
+                    return;
+                }
+            });
+        }
+
+</script>
+</body>
+</html>

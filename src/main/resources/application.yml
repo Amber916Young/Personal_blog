@@ -1,0 +1,108 @@
+server:
+  port: 8888
+#  session-timeout: 60 # session 超时时间/分钟，默认是30
+#  tomcat:
+#    uri-encoding: utf-8 # 设置tomcat编码
+spring:
+  application:
+    name: yang-admin
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  boot:
+    admin:
+      client:
+        url: "http://wwww.youngbird97.top"
+  master:
+    datasource:
+      name: druidDataSource
+      type: com.alibaba.druid.pool.DruidDataSource
+      druid:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        filters: stat,wall,log4j,config
+        max-active: 100  #最大连接数
+        initial-size: 1 #初始化大小
+        max-wait: 60000 #获取链接等待超时时间
+        min-idle: 1 #最小连接数
+        time-between-eviction-runs-millis: 60000 #间隔多久进行一次检测，检测需要关闭的空闲连接，单位事ms
+        min-evictable-idle-time-millis: 300000 #一个连接在池中最小生存的事件 ms
+        validation-query: select 'x'
+        test-while-idle: true
+        test-on-borrow: false
+        test-on-return: false
+        pool-prepared-statements: true
+        max-open-prepared-statements: 50
+        max-pool-prepared-statement-per-connection-size: 20
+        url: jdbc:mysql://1.117.47.136:3306/yangAdmin?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&useSSL=false&allowPublicKeyRetrieval=true
+        username: root
+        password: yangyyj
+  slave:
+    datasource:
+      name: druidDataSource
+      type: com.alibaba.druid.pool.DruidDataSource
+      druid:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://1.117.47.136:3306/yyjblog?useUnicode=true&characterEncoding=utf8mb4&characterSetResults=utf8&useSSL=false&allowPublicKeyRetrieval=true
+        username: root
+        password: yangyyj
+        filters: stat,wall,log4j,config
+        max-active: 100  #最大连接数
+        initial-size: 1 #初始化大小
+        max-wait: 60000 #获取链接等待超时时间
+        min-idle: 1 #最小连接数
+        time-between-eviction-runs-millis: 60000 #间隔多久进行一次检测，检测需要关闭的空闲连接，单位事ms
+        min-evictable-idle-time-millis: 300000 #一个连接在池中最小生存的事件 ms
+        validation-query: select 'x'
+        test-while-idle: true
+        test-on-borrow: false
+        test-on-return: false
+        pool-prepared-statements: true
+        max-open-prepared-statements: 50
+        max-pool-prepared-statement-per-connection-size: 20
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        serviceName: ${spring.application.name}	# 注册到consul的服务名称
+  thymeleaf:
+    cache: false
+    prefix:  classpath:/templates/
+    check-template-location: true
+    suffix: .html
+    encoding: utf-8
+    mode: HTML
+    #这个是关键，放开springboot对静态资源的拦截
+    mvc:
+      static-path-pattern: /static/**
+    resources:
+      static-locations: classpath:/templates/,classpath:/resources/,classpath:/resources/,classpath:/static/
+
+# 开放健康检查接口
+#  username: root  1.117.47.136
+#    password: Yyj188706 yangyyj
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+#mybatis:
+#  mapper-locations: classpath:mapper/*Mapper.xml # 配置 mapper 文件所在的路径
+#  type-aliases-package: com.yang.entity # 配置这个包下的所有类起别名
+#分页pageHelper
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: couny=countSql
+
+Delcode:
+  key: root
+fileupload:
+  path: http://fileserver.youngbird97.top/file/upload
+localPath:
+  path: /Users/birdyyoung/Desktop/upload/

@@ -1,0 +1,74 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yang.mapper.slave.ViewMapper">
+    <select id="articleIndexQuery" parameterType="com.yang.utils.Page" resultType="java.util.HashMap">
+        select * from yyjblog.view_article_types
+        <where>
+            1=1
+            <if test="keyWord !=null">
+                and  concat(
+                IFNULL(author,'')
+                ,IFNULL(title,'')
+                ,IFNULL(t_type,'')
+                ,IFNULL(content,''))
+                like concat('%', #{keyWord}, '%')
+            </if>
+
+        </where>
+        order by publish_time desc
+        limit #{start},#{rows}
+
+    </select>
+    <select id="articleQueryByParam" parameterType="hashmap" resultType="java.util.HashMap">
+        select * from yyjblog.view_article_types
+        <where>
+            1=1
+            <if test="status != null">
+              and  status=#{status}
+            </if>
+            <if test="id != null">
+                and  id=#{id}
+            </if>
+            <if test="type != null">
+                and  type=#{type}
+            </if>
+            <if test="memo != null">
+                and  memo=#{memo}
+            </if>
+            <if test="status == null">
+                and  status != '0'
+            </if>
+            <if test="category != null">
+                and  category=#{category}
+            </if>
+        </where>
+    </select>
+    <select id="commentsQuery" resultType="java.util.HashMap">
+        select * from yyjblog.comment
+        <where>
+            1=1
+            <if test="keyWord !=null">
+             and   aid = #{keyWord}
+            </if>
+        </where>
+        order by createTime desc
+        limit #{start},#{rows}
+    </select>
+    <select id="commentsQueryCount" resultType="java.lang.Integer">
+        select count(1) from yyjblog.comment
+    </select>
+    <insert id="commentsInsert">
+        insert  into yyjblog.comment(aid,content,username,cid,createTime,avatar)
+        values (
+                    #{aid}
+                   ,#{content}
+                   ,#{username}
+                   ,#{cid}
+                   ,#{createTime}
+                   ,#{avatar}
+               )
+
+    </insert>
+
+</mapper>

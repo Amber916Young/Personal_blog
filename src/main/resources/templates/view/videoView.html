@@ -1,0 +1,148 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:replace="~{fragments/header :: header}"></head>
+<link href="/plugin/highLight/styles/atom-one-dark.min.css" rel="stylesheet" th:href="@{/plugin/highLight/styles/atom-one-dark.min.css}" />
+<body>
+<div>
+  <div th:replace="~{fragments/navigation :: navigation}"></div>
+  <div th:style=" 'background-image:url(' +  @{${article?.cover_url}} + ');'"
+       class="inner-hero">
+    <div class="hero-wrapper w-container">
+      <div class="view-all"></div>
+      <h1 class="hero-header" th:text="${article?.type}"></h1>
+
+    </div>
+    <div class="dark-overlay"></div>
+  </div>
+  <div class="main-section">
+    <div style="display:flex; flex-wrap: wrap" class="  w-col  w-col-12">
+      <div class="w-container   w-col  w-col-8">
+        <div class="section-heading">
+          <h1 class="blog-post-title" th:text="${article?.title}"></h1>
+          <img src="/img/index/headp.jpg"
+               loading="lazy" height="80" width="80"
+               srcset="/img/index/headp.jpg"
+               sizes="80px" alt="" class="image_none" />
+          <div class="blog-date" th:text="${ article?.author}"></div>
+          <div class="blog-date" th:text="${ #strings.substring(article?.publish_time,0,19)}"></div>
+          <a th:href="@{${'/categories/'+article?.memo}} " data-w-expand="category"
+             th:style="${article?.label_font}" class="blog-category" th:text="${article?.t_name+' '+article?.memo}"></a>
+          <th:block  th:each="item : ${tagsList}">
+            <span class="layui-badge "  th:classappend="${item?.label}" th:text="${item?.name}"></span>
+          </th:block>
+          <div class="full-divide"></div>
+        </div>
+        <blockquote class="layui-elem-quote layui-quote-nm preview-text"  th:text="${article?.detail}" ></blockquote>
+
+        <div class="blog-post w-richtext border_gary" style="border: 1px solid rgba(232, 230, 230, 0.75);" >
+          <div id="youkuplayer"style="width:100%;height:326px"></div>
+
+        </div>
+      </div>
+      <div class="w-container   w-col  w-col-3" style="border: 1px solid rgba(232, 230, 230, 0.75);padding: 0 1em">
+        <div class="section-heading">
+          <h2>评论</h2>
+          <div class="med-divider"></div>
+        </div>
+        <div class="w-dyn-list">
+          <form class="layui-form" action=""  >
+            <div class="layui-form-item layui-form-text">
+              <textarea name="content"  id="commentAera" equired lay-verify="required" placeholder="请输入内容" class="layui-textarea"></textarea>
+            </div>
+            <div class="layui-form-item" style="text-align: end">
+              <div class="layui-input-inline">
+                <input type="text"  hidden="hidden" name="aid" id="aid" th:value="${ article?.id}">
+                <input type="text" required name="username" lay-verify="required" placeholder="用户昵称(必填）" autocomplete="off" class="layui-input">
+              </div>
+              <div class="layui-input-inline">
+                <input type="text"  placeholder="用户邮箱(选填）" autocomplete="off" class="layui-input">
+              </div>
+              <button class="layui-btn" type="button" style="background-color: #dd783f" lay-submit lay-filter="commnetForm">提交</button>
+            </div>
+          </form>
+          <div id="comments">
+            <!--            <div class="layui-form">-->
+            <!--              <div class="comment_head">-->
+            <!--                <img src="/img/index/headp.jpg"  srcset="/img/index/headp.jpg"  sizes="50px"  loading="lazy" height="50" width="50" class="image_none">-->
+            <!--                <div class="comment_card">-->
+            <!--                  <div class="comment_user">tothemoon</div>-->
+            <!--                  <div class="comment_time">2021-09-12</div>-->
+            <!--                </div>-->
+            <!--              </div>-->
+            <!--              <div class="comment_content">-->
+            <!--                dsfjksdjs-->
+            <!--              </div>-->
+            <!--              <hr>-->
+            <!--            </div>-->
+          </div>
+          <div id="test1" style="text-align: center"></div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <div class="main-section gray">
+      <div class="w-container">
+        <div class="section-heading">
+          <h2>相关文章</h2>
+          <div class="med-divider"></div>
+        </div>
+        <div class="w-dyn-list">
+          <div role="list" class="w-clearfix w-dyn-items w-row">
+            <th:block  th:each="item,stat:${articleList}">
+              <div role="listitem" class="blog-thumbnail w-dyn-item w-col w-col-3">
+                <a th:href="@{${ '/view/detail/id/'+item?.id+'/category/'+item?.category}}"  aria-current="page" class="thumbnail-wrapper w-inline-block w--current">
+                  <div class="image-wrapper">
+                    <div th:style=" 'background-image:url(' +  @{${item?.cover_url}} + ');'"
+                         class="thumbnail-image">
+                    </div>
+                    <div th:style="${item?.t_label}"  class="category-tag" th:text="${item?.t_name}"></div>
+                  </div>
+                  <div class="thumbnail-text">
+                    <div class="blog-title" th:text="${item?.title}"></div>
+                    <div class="preview-text"  th:text="${item?.detail}" ></div>
+                  </div><div class="thumb-details w-clearfix">
+                  <img th:src="@{${item?.avatar}}" alt="" class="author-img">
+                  <div class="author-title" th:text="${item?.author}"></div><div class="thumbnail-date"  th:text="${ #strings.substring(item?.publish_time,0,10)}"></div></div></a>
+              </div>
+            </th:block>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div th:replace="~{fragments/footer :: footer}"></div>
+</div>
+<script type="text/javascript" src="https://player.youku.com/jsapi"></script>
+<script type="text/javascript">
+  init();
+  function init(){
+    var url = "/view/video/queryInfo";
+    ajaxPost(url,"", function (data) {
+      if (data.code == 200) {
+        layer.msg("查询成功", {time: 3000, icon: 1});
+        var res = data.data.media;
+        var item = data.data.item;
+        var player = new YKU.Player('youkuplayer',{
+          styleid: '0',
+          client_id: res.client_id,
+          vid: item.content,
+          newPlayer: true
+        });
+      } else {
+        layer.open({
+          title: '查询失败'
+          ,content:data.msg
+        });
+        return;
+      }
+    });
+  }
+
+</script>
+</body>
+</html>

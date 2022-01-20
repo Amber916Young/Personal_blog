@@ -1,0 +1,191 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>上传demo</title>
+    <link rel="stylesheet" href="https://cloud.youku.com/assets/css/bootstrap.css">
+    <style>
+        /* demo只写了基本样式，可以根据自己网站风格定重写样式 */
+        #upload_form {
+            width: 80%;
+        }
+        #ossfile {
+            width: 400px;
+            margin-left: 110px;
+            margin-right: 50px;
+        }
+        #selectfiles {
+            margin-left: 60px;
+        }
+        #postfiles {
+            background: #2a8bd0;
+            margin-left: 60px;
+            color: #fff;
+        }
+        .well {
+            padding: 10px;
+            width: 100%;
+            margin-left: 60px;
+            margin-top: 20px;
+        }
+        #oss-progress {
+            display: none;
+        }
+        #input01,#input02,select{
+            width: 300px;
+            height: 40px;
+        }
+        #textarea{
+            width:300px;
+            height:80px;
+            border-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+<div class="upload-wrap" id="youku-upload" style="height: 500px;overflow: hidden">
+<!--    <div id="youkuplayer" style="width:580px;height:326px"></div>-->
+    <div class="well form-horizontal" name="video-upload" id="upload_form">
+        <div class="control-group" id="contoral-group1">
+            <p id="ossfileInfor"></p>
+            <div class="progress" id="oss-progress">
+                <div class="progress-bar" style="width: 0%"></div>
+            </div>
+            <input type="file" id="selectfiles" /></a>
+            <div id="uploadControl" class="controls">
+            </div>
+        </div>
+        <div class="control-group">
+            <div id="ossfile">你的浏览器不支持flash,Silverlight或者HTML5！</div>
+        </div>
+        <div class="well" style="margin-left:0;">
+            <h4>说明</h4>
+            <ul>
+                <li>最大支持上传<strong>4 GB</strong> 视频文件</li>
+                <li>允许上传的视频格式为：wmv,avi,dat,asf,rm,rmvb,ram,mpg,mpeg,3gp,mov,mp4,m4v,dvix,dv,dat,</br>mkv,flv,vob,ram,qt,divx,cpk,fli,flc,mod。不符合格式的视频将会被丢弃，请确保视频格式的正确性，避免上传失败</li>
+            </ul>
+        </div>
+        <div class="control-group">
+            <a id="postfiles" href="javascript:void(0);" class='btn'>开始上传</a>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="input0">视频id</label>
+            <input id="console"  type="text" readonly="readonly" />
+        </div>
+        <div class="control-group"  style="visibility: hidden">
+            <label class="control-label" for="input0">标题</label>
+            <div class="controls">
+                <input type="text"  class="input-xlarge" id="input0" name="title" style="padding-left: 6px;">
+            </div>
+        </div>
+        <div class="control-group" style="visibility: hidden">
+            <label class="control-label" for="textarea">简介</label>
+            <div class="controls">
+                <textarea class="input-xlarge" id="textarea" rows="3" name="description" value="test" style="padding-left: 6px;"></textarea>
+            </div>
+        </div>
+        <div class="control-group" style="visibility: hidden">
+            <label class="control-label" for="input02">标签</label>
+            <div class="controls">
+                <input type="text" class="input-xlarge" id="input02" name="tags" style="padding-left: 6px;" value="旅行">
+            </div>
+        </div>
+        <div class="control-group"  style="visibility: hidden">
+            <label class="control-label" for="category-node">类别</label>
+            <div class="controls">
+                <select id="category-node" name="category" value="1" class="menu_style"></select>
+            </div>
+        </div>
+        <div class="control-group" style="visibility: hidden">
+            <label class="control-label">版权所有</label>
+            <div class="controls">
+                <label class="radio inline"><input  type="radio" name="copyright_type" id="copyright_type2" value="original" checked="true">原创</label>
+                <label class="radio inline"><input   type="radio" name="copyright_type" id="copyright_type1" value="reproduced">转载</label>
+            </div>
+        </div>
+        <div class="control-group"  style="visibility: hidden">
+            <label class="control-label">视频权限</label>
+
+            <div class="controls">
+                <label class="radio inline" id="juri_public">
+                    <input type="radio" name="public_type" id="public_type1" value="all" checked="">公开
+                </label>
+                <label class="radio inline" id="juri_friend" style="width:100px;">
+                    <input type="radio" name="public_type" id="public_type2" value="friend">仅好友可见
+                </label>
+                <label class="radio inline" id="juri_key">
+                    <input type="radio" name="public_type" id="public_type3" value="password">设置密码
+                </label>
+                <label class="radio inline" style="display:none" id="passwrod">
+                    <input type="text" class="input " name="watch_password">
+                </label>
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="span5" id="upload-status-wraper"></div>
+    </div>
+    <div id="complete">
+    </div>
+    <div id="login" style="width:100%;height:100%;position:fixed;z-index:999;left:0px;top:0px;overflow:hidden;display:none;"></div>
+</div>
+
+<script type="text/javascript" src="https://cloud.youku.com/assets/js/jquery-1.9.1.js"></script>
+<script src="/js/ajaxRequest.js" th:href="@{/js/ajaxRequest.js}" type="text/javascript"></script>
+<script type="text/javascript" src="https://cloud.youku.com/assets/js/browser-md5-file.min.js"></script>
+<script type="text/javascript" src="https://gosspublic.alicdn.com/aliyun-oss-sdk-6.1.0.min.js"></script>
+<script src="/js/uploadCloud.js" th:href="@{/js/uploadCloud.js}" type="text/javascript"></script>
+<script type="text/javascript" src="https://player.youku.com/jsapi"></script>
+
+
+<script>
+    client_id = 'a25f16728d599ad2';
+    access_token = 'c184127bd627c14e5a0599de53546642';
+    //上传成功后的回调
+    function cloudUploadSuccess(res) {
+        console.info(res);
+        $("#console").val(res.video_id);
+        //uploadAgain();
+    }
+    //调用
+    window.onload = function(){
+        cloud_outside_upload(client_id,access_token,cloudUploadSuccess);
+    }
+    function getQueryString(name) {
+        console.log(window.location.search);
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+    var id =getQueryString("id");
+    if(id!=""||id!=null||typeof(di)!="undefined"){
+        init();
+    }
+    function init(){
+        var url = "/view/video/queryInfo/id/"+id;
+        ajaxPost(url,"", function (data) {
+            if (data.code == 200) {
+                console.info(data)
+                var res = data.data.media;
+                var item = data.data.item;
+                var player = new YKU.Player('youkuplayer',{
+                    styleid: '0',
+                    client_id: res.client_id,
+                    vid: item.content,
+                    newPlayer: true,
+                    autoplay: true
+                });
+            } else {
+                return;
+            }
+        });
+    }
+</script>
+</body>
+
+</html>
