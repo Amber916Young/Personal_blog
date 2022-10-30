@@ -95,6 +95,7 @@ img {
 }
 
 .hero-section {
+    background-size: contain;
     position: relative;
     height: 500px;
     padding-top: 184px;
@@ -103,7 +104,7 @@ img {
     background-position-y: 70%;
     /*background-position: 0px 0px, 50% 50%;*/
     background-attachment:fixed;
-    background-size: auto, cover;
+    /*background-size: auto, cover;*/
 }
 
 .navbar {
@@ -616,7 +617,9 @@ transform-style: preserve-3d;-->*/
     position: relative;
     height: 300px;
     padding-top: 125px;
-    background-image: url("https://uploads-ssl.webflow.com/60e2b7f8e2f4776f4ab95cf8/60e2b7f8e2f4777205b95d15_bridges.jpg");
+    /*background-image: url("https://uploads-ssl.webflow.com/60e2b7f8e2f4776f4ab95cf8/60e2b7f8e2f4777205b95d15_bridges.jpg");*/
+    background-image: url("/img/index/bg.jpeg");
+
     background-position: 50% 50%;
     background-size: cover;
     text-align: center;
@@ -1369,7 +1372,7 @@ transform-style: preserve-3d;-->*/
     overflow: hidden;
     text-indent: 100%;
     white-space: nowrap;
-    background: #448D76 url(/img/cd-top-arrow.svg) no-repeat center 50%;
+    background: #4a129e url(/img/cd-top-arrow.svg) no-repeat center 50%;
     visibility: hidden;
     opacity: 0;
     -webkit-transition: opacity .3s 0s, visibility 0s .3s;

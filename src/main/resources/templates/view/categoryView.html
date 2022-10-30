@@ -2,8 +2,10 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head th:replace="~{fragments/header :: header}"></head>
+<title >Category </title>
 
 <body>
+
 <div>
     <div th:replace="~{fragments/navigation :: navigation}"></div>
     <div style="background-image:url(&quot;https://uploads-ssl.webflow.com/60e2b7f8e2f47727f1b95d0d/60e2b7f8e2f4771a54b95d79_photo-1437846972679-9e6e537be46e.jpg&quot;)"
@@ -16,33 +18,114 @@
     <div class="main-section">
         <div class="w-container">
             <div class="w-dyn-list">
-                <div role="list" class="w-clearfix w-dyn-items w-row">
-                    <th:block  th:each="item,stat:${articleList}">
-                        <div role="listitem" class="blog-thumbnail w-dyn-item w-col w-col-4">
-                            <a th:href="@{${ '/view/detail/id/'+item?.id+'/catrgory/'+item?.memo}}"  class="thumbnail-wrapper w-inline-block">
-                                <div class="image-wrapper">
-                                    <div th:style="'background-image:url(' +  @{${item?.cover_url}} + ');'"
-                                         class="thumbnail-image"></div>
-                                </div>
-                                <div class="thumbnail-text">
-                                    <div class="blog-title" th:text="${item?.title}"></div>
-                                    <div class="preview-text" th:text="${item?.detail}"></div>
-                                </div>
-                                <div class="thumb-details w-clearfix">
-                                    <img th:src="@{${item?.avatar}}" alt="" class="author-img">
-                                    <div class="author-title" th:text="${item?.author}"></div>
-                                    <div class="thumbnail-date"  th:text="${ #strings.substring(item?.publish_time,0,10)}"></div>
-                                </div>
-                            </a>
-                        </div>
-                    </th:block>
+                <div role="list"  id="articleList" class="w-clearfix w-dyn-items w-row">
+<!--                    <th:block  th:each="item,stat:${articleList}">-->
+<!--                        <div role="listitem" class="blog-thumbnail w-dyn-item w-col w-col-4">-->
+<!--                            <a th:href="@{${ '/view/detail/id/'+item?.id+'/catrgory/'+item?.memo}}"  class="thumbnail-wrapper w-inline-block">-->
+<!--                                <div class="image-wrapper">-->
+<!--                                    <div th:style="'background-image:url(' +  @{${item?.cover_url}} + ');'"-->
+<!--                                         class="thumbnail-image"></div>-->
+<!--                                </div>-->
+<!--                                <div class="thumbnail-text">-->
+<!--                                    <div class="blog-title" th:text="${item?.title}"></div>-->
+<!--                                    <div class="preview-text" th:text="${item?.detail}"></div>-->
+<!--                                </div>-->
+<!--                                <div class="thumb-details w-clearfix">-->
+<!--                                    <img th:src="@{${item?.avatar}}" alt="" class="author-img">-->
+<!--                                    <div class="author-title" th:text="${item?.author}"></div>-->
+<!--                                    <div class="thumbnail-date"  th:text="${ #strings.substring(item?.publish_time,0,10)}"></div>-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                    </th:block>-->
                 </div>
+                <div id="laypage"></div>
             </div>
         </div>
     </div>
 </div>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
+<script>
+
+    var linkUrl = location.href;
+    linkUrl = linkUrl.substring(linkUrl.lastIndexOf("/")+1)
+    function loadpage(res){
+        var tableContent = "";
+        $.each(res,function(i,item){
+            tableContent +='             <div role="listitem" class="blog-thumbnail w-dyn-item w-col w-col-4">\n' +
+                '                            <a href="/view/detail/id/'+item.id+'/category/'+item.category+'"  class="thumbnail-wrapper w-inline-block">\n' +
+                '                                <div class="image-wrapper">\n' +
+                '                                    <div style="background-image:url(' +  item.cover_url + ');"\n' +
+                '                                         class="thumbnail-image"></div>\n' +
+                '                                </div>\n' +
+                '                                <div class="thumbnail-text">\n' +
+                '                                    <div class="blog-title" >'+item.title+'</div>\n' +
+                '                                    <div class="preview-text">'+item.detail+'</div>\n' +
+                '                                </div>\n' +
+                '                                <div class="thumb-details w-clearfix">\n' +
+                '                                    <img src="'+item.avatar+'" alt="" class="author-img">\n' +
+                '                                    <div class="author-title" >'+item.author+'</div>\n' +
+                '                                    <div class="thumbnail-date">'+item.publish_time.substring(0,10)+'</div>\n' +
+                '                                </div>\n' +
+                '                            </a>\n' +
+                '                        </div>';
+        });
+        $("#articleList").html(tableContent);
+    }
+    layui.use(['laypage', 'layer'], function() {
+        var laypage = layui.laypage
+            , layer = layui.layer;
+
+        var url = "/view/category/queryAll";
+        var count = 0;
+        var jsonData={};
+        jsonData["limit"] = 6;
+        jsonData["keyWord"]= linkUrl;
+        jsonData["curr"]=1;
+        var params = JSON.stringify(jsonData);
+        ajaxPost(url, params,function (data) {
+            // console.info(data)
+            var flag = false
+            if (data.code == 200) {
+                count = data.data.count;
+                loadpage(data.data.result)
+                laypage.render({
+                    elem: 'laypage'
+                    ,count: count
+                    ,layout: [ 'prev', 'page', 'next', 'skip']
+                    ,limits:[9,12,18,27,36]
+                    ,jump: function(obj){
+                        // console.log(obj)
+                        if (obj.curr == 1 && flag == false) return;
+                        flag = true;
+                        var limit = obj.limit
+                        var curr = obj.curr
+                        jsonData["limit"] = 6;
+                        jsonData["keyWord"]= linkUrl;
+                        jsonData["curr"]=curr;
+                        params = JSON.stringify(jsonData);
+                        ajaxPost(url, params, function (data) {
+                            if (data.code == 200) {
+                                layer.msg(data.msg, {time: 3000, icon: 1});
+                                loadpage(data.data.result)
+                            } else {
+                                layer.open({
+                                    title: 'Search failed'
+                                    ,content:data.msg
+                                });
+                                return;
+                            }
+                        });
+                    }
+                });
+            }
+        })
+
+    })
+
+</script>
+
 
 </body>
 </html>

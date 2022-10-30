@@ -17,23 +17,18 @@ public class WebIndexController {
 
     @RequestMapping("")
     public String homepage(){
-        return "/view/index";
+        return "/view/indexDark";
     }
     @RequestMapping("/categories/type/{type}")
     public String categories_page(@PathVariable("type") String type, Model model){
-        HashMap param = new HashMap();
-        param.put("memo",type);
-        List<HashMap<String, Object>> lists2 = viewService.articleQueryByParam(param);
-        model.addAttribute("articleList",lists2);
-        model.addAttribute("type",type);
         return "/view/categoryView";
     }
     @RequestMapping("/categories")
     public String categories(Model model){
-        HashMap param = new HashMap();
+//        HashMap param = new HashMap();
 //        param.put("memo",type);
-        List<HashMap<String, Object>> lists2 = viewService.articleQueryByParam(param);
-        model.addAttribute("articleList",lists2);
+//        List<HashMap<String, Object>> lists2 = viewService.articleQueryByParam(param);
+//        model.addAttribute("articleList",lists2);
 //        model.addAttribute("type",type);
         return "/view/categoryView";
     }

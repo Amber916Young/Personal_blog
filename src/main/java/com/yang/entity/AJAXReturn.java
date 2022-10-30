@@ -6,6 +6,7 @@ import com.yang.handler.CommonEnum;
 import lombok.Data;
 
 import java.util.HashMap;
+import java.util.List;
 
 @Data
 public class AJAXReturn extends HashMap<String, Object> {
@@ -23,6 +24,7 @@ public class AJAXReturn extends HashMap<String, Object> {
      * 响应结果
      */
     private Object result;
+    private int count;
 
     public AJAXReturn() {
     }
@@ -91,11 +93,18 @@ public class AJAXReturn extends HashMap<String, Object> {
         return rb;
     }
 
+
     @Override
     public String toString() {
         return JSONObject.toJSONString(this);
     }
 
-
-
+    public static AJAXReturn success(String msg,Object data,int count) {
+        AJAXReturn rb = new AJAXReturn();
+        rb.setCode(CommonEnum.SUCCESS.getResultCode());
+        rb.setMsg(msg);
+        rb.setResult(data);
+        rb.setCount(count);
+        return rb;
+    }
 }

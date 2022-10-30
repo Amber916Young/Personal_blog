@@ -96,6 +96,10 @@
                     </div>
                 </div>
             </div>
+            <div style="text-align: center; width: 100%">
+                <button class="layui-btn" data-page="2" id="loadMore" onclick="loadMore()" type="button" style="width: 30%; background-color: #448D76">加载更多</button>
+            </div>
+
         </div>
         <style>
             .photo_warp{
@@ -177,22 +181,31 @@
 <div th:replace="~{fragments/footer :: footer}"></div>
 
 <script>
-        loadArticle();
-        setTimeout(function() {
-            loadRecommod();
-        }, 300);
+        loadArticle(1);
+        loadRecommod();
+        function loadMore(){
+            var page= $("#loadMore").data("page");
+            loadArticle(page);
+            page = page+1;
+            $("#loadMore").data("page",page);
+            console.log($('#loadMore').data('page'));
+        }
         // setTimeout(function() {
         //     // loadPhoto();
         // }, 800);
-        function loadArticle(){
+        function loadArticle(pageno){
             var jsonData={};
-            jsonData["pageno"]=1;
+            jsonData["pageno"]=pageno;
             jsonData["keyWord"]="all";
             var params = JSON.stringify(jsonData);
             var url = "/view/article/index/query";
             ajaxPost(url, params, function (data) {
-                console.info(data);
+                // console.info(data);
                 if (data.code == 200) {
+                    if(data.data.length==0){
+                        layer.msg("暂无更新", {time: 3000, icon: 1});
+                        return;
+                    }
                     layer.msg("查询成功", {time: 3000, icon: 1});
                     var tableContent = "";
                     $.each(data.data,function(i,item){
@@ -220,7 +233,7 @@
 
 
                     });
-                    $("#articleList").html(tableContent)
+                    $("#articleList").append(tableContent)
                 } else {
                     layer.open({
                         title: '查询失败'

@@ -10,11 +10,13 @@
                 and  concat(
                 IFNULL(author,'')
                 ,IFNULL(title,'')
-                ,IFNULL(t_type,'')
+                ,IFNULL(type,'')
+                ,IFNULL(category,'')
                 ,IFNULL(content,''))
                 like concat('%', #{keyWord}, '%')
             </if>
 
+            and status != '0'
         </where>
         order by publish_time desc
         limit #{start},#{rows}
@@ -43,6 +45,7 @@
                 and  category=#{category}
             </if>
         </where>
+
     </select>
     <select id="commentsQuery" resultType="java.util.HashMap">
         select * from yyjblog.comment
@@ -58,6 +61,74 @@
     <select id="commentsQueryCount" resultType="java.lang.Integer">
         select count(1) from yyjblog.comment
     </select>
+    <select id="pageQueryCategoryData" resultType="java.util.HashMap">
+        select * from yyjblog.view_article_types
+        <where>
+            1=1
+            <if test="keyWord !=null">
+                and   concat(
+                IFNULL(memo,'')
+                ,IFNULL(type,'')
+                ,IFNULL(category,''))
+                like concat('%', #{keyWord}, '%')
+            </if>
+            and status != '0'
+        </where>
+        limit #{start},#{rows}
+    </select>
+    <select id="pageQueryCategoryCount" resultType="java.lang.Integer">
+        select count(1) from yyjblog.view_article_types
+        <where>
+            1=1
+            <if test="keyWord !=null">
+                and   concat(
+                IFNULL(memo,'')
+                ,IFNULL(type,'')
+                ,IFNULL(category,''))
+                like concat('%', #{keyWord}, '%')
+            </if>
+            and status != '0'
+        </where>
+
+    </select>
+    <select id="momentIndexQuery" resultType="java.util.HashMap">
+        select * from yyjblog.moment
+        <where>
+            1=1
+            <if test="keyWord !=null">
+                and   content = #{keyWord}
+            </if>
+        </where>
+        order by publishTime desc
+        limit #{start},#{rows}
+    </select>
+    <select id="selectPageList" resultType="java.util.HashMap">
+        select * from yyjblog.helper
+        <where>
+            1=1
+            <if test="keyWord !=null">
+                and   concat(
+                IFNULL(source_file,'')
+                ,IFNULL(new_file,'')
+                ,IFNULL(file_no,''))
+                like concat('%', #{keyWord}, '%')
+            </if>
+        </where>
+        limit #{start},#{rows}
+    </select>
+    <select id="selectPageCount" resultType="java.lang.Integer">
+        select count(1) from yyjblog.helper
+        <where>
+        1=1
+            <if test="keyWord !=null">
+                and   concat(
+                IFNULL(source_file,'')
+                ,IFNULL(new_file,'')
+                ,IFNULL(file_no,''))
+                like concat('%', #{keyWord}, '%')
+            </if>
+        </where>
+    </select>
     <insert id="commentsInsert">
         insert  into yyjblog.comment(aid,content,username,cid,createTime,avatar)
         values (
@@ -69,6 +140,15 @@
                    ,#{avatar}
                )
 
+    </insert>
+    <insert id="addHelperPage">
+        insert  into yyjblog.helper(source_file,new_file,file_no,create_time)
+        values (
+              #{source_file}
+               ,#{new_file}
+               ,#{file_no}
+               ,#{create_time}
+               )
     </insert>
 
 </mapper>

@@ -8,11 +8,13 @@ import com.yang.service.impl.WebApiService;
 import com.yang.utils.AvatarImg;
 import com.yang.utils.Page;
 import com.yang.utils.TimeParse;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -28,6 +30,59 @@ public class WebViewController {
     ViewService viewService;
     @Autowired
     WebApiService webApiService;
+
+
+    @GetMapping(value = "/personal/cv", produces = "application/json; charset=utf-8")
+    public Object CVViewload() {
+        return "/pages/cv/CV_index";
+    }
+
+    @SneakyThrows
+    @ResponseBody
+    @PostMapping("/category/queryAll")
+    public HttpResult categories(@RequestBody String jsonData){
+        jsonData = URLDecoder.decode(jsonData, "utf-8").replaceAll("=","");
+        HashMap<String, Object> param = JSONObject.parseObject(jsonData, HashMap.class);
+        Page page = new Page();
+        int limit = Integer.parseInt(param.get("limit").toString());
+        limit = 6 ;
+        int curr = Integer.parseInt(param.get("curr").toString());
+        String keyword = param.get("keyWord").toString();
+        switch (keyword){
+            case "travel":
+                keyword = "旅行";
+                break;
+            case "lifestyle":
+                keyword = "生活,随笔";
+                break;
+            case "photography":
+                keyword = "摄影";
+                break;
+            case "code":
+                keyword = "代码";
+                break;
+            case "adventure":
+                keyword = "冒险";
+                break;
+        }
+
+        page.setRows(limit);
+        page.setPage(curr);
+        int start = page.getStart();
+        page.setStart(start);
+
+        if(keyword.equals("all")) keyword=null;
+        page.setKeyWord(keyword);
+        List<HashMap> lists = viewService.pageQueryCategoryData(page);
+        int totals=viewService.pageQueryCategoryCount(page);
+        HashMap<String, Object> res = new HashMap<>();
+        res.put("result",lists);
+        res.put("count",totals);
+        return  HttpResult.ok("successfully",res);
+    }
+
+
+
     @GetMapping(value = "/video", produces = "application/json; charset=utf-8")
     public Object VideoViewload() {
         return "/view/uploadYouku";
@@ -43,7 +98,12 @@ public class WebViewController {
         List<HashMap<String, Object>> lists = viewService.articleQueryByParam(param);
         param = new HashMap();
         param.put("category",category);
-        List<HashMap<String, Object>> lists2 = viewService.articleQueryByParam(param);
+        Page page = new Page();
+        page.setRows(4);
+        page.setPage(1);
+        page.setKeyWord(category);
+        page.setStart(page.getStart());
+        List<HashMap<String, Object>> lists2 = viewService.articleIndexQuery(page);
         List<HashMap<String, Object>> tagsList = webApiService.tags_articleQuery2(id);
         model.addAttribute("article",lists.get(0));
         model.addAttribute("articleList",lists2);
@@ -87,7 +147,7 @@ public class WebViewController {
         int pageno = Integer.parseInt(param.get("pageno").toString());
         String keyWord = param.get("keyWord").toString();
         Page page = new Page();
-        page.setRows(8);
+        page.setRows(9);
         page.setPage(pageno);
         if(keyWord.equals("all")){
             keyWord=null;
@@ -97,6 +157,23 @@ public class WebViewController {
         List<HashMap<String, Object>> lists = viewService.articleIndexQuery(page);
         return  HttpResult.ok(lists);
     }
+    @ResponseBody
+    @PostMapping(value = "/moment/index/query", produces = "application/json; charset=utf-8")
+    public HttpResult indexMomentList(@RequestBody String jsonData) throws UnsupportedEncodingException {
+        jsonData = URLDecoder.decode(jsonData, "utf-8").replaceAll("=","");
+        HashMap<String, Object> param = JSONObject.parseObject(jsonData, HashMap.class);
+        int pageno = Integer.parseInt(param.get("pageno").toString());
+        Page page = new Page();
+        page.setRows(10);
+        page.setPage(pageno);
+        page.setKeyWord(null);
+        page.setStart(page.getStart());
+        List<HashMap<String, Object>> lists = viewService.momentIndexQuery(page);
+        return  HttpResult.ok(lists);
+    }
+
+
+
     @ResponseBody
     @PostMapping(value = "/photo/index/query", produces = "application/json; charset=utf-8")
     public HttpResult indexphotoList(@RequestBody String jsonData) throws UnsupportedEncodingException {

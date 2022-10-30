@@ -1,0 +1,268 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <title>批量修改文件名</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css">
+    <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon" />
+    <link href="/plugin/layui/css/layui.css" rel="stylesheet" th:href="@{/plugin/layui/css/layui.css}" />
+    <link href="/css/default.css" rel="stylesheet" th:href="@{/css/default.css}" />
+    <script src="/plugin/layui/layui.js" th:href="@{/plugin/layui/js/layui.js}" type="text/javascript"></script>
+</head>
+<body>
+<header>
+    <div class="px-3 py-2 bg-dark text-white">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="javacript:void(0);" class="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none" id="ipaddress">Yejia Yang</a>
+            <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
+                <li>
+                    <a href="/" class="nav-link text-white">
+                        <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#home"/></svg>
+                        Home
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+
+
+
+<div  >
+    <div class="layui-row "  style="margin-top: 2rem; margin-left: 1rem ; margin-right: 1rem" >
+        <div class="layui-col-md5" style="margin-right: 10px; width: 40%;" >
+            <div class="layui-card">
+                <div class="layui-card-header"><b>表单</b></div>
+                <div class="layui-card-body">
+                    <form  class= " layui-form "  action="">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">匹配项</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="match"  placeholder="例如：20221028肝弹_图像_KFH00064" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux layui-font-red" >匹配的是需要替换的部分(默认替换第一个下划线之前的部分)
+                                    ，例如替换部分为<b class="text-primary">20221028肝弹_图像_KFH00064</b>，根据输入的匹配规则:【 <b class="text-primary">20221028肝弹_图像_KFH00064</b>_20221028_07-59-19.pdf】--> 【 <b class="text-primary">1102810</b>_20221028_07-59-19.pdf】</div>
+
+                            </div>
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">源文件</label>
+                                <div class="layui-input-block">
+                                    <textarea name="sourceList"  id="sourceList" required  lay-verify="required" placeholder="20221028肝弹_图像_KFH00064_20221028_07-59-19.pdf
+20221028肝弹_图像_KFH00064_20221028_08-28-19.pdf
+......" class="layui-textarea"></textarea>
+                                </div>
+                                <div class="layui-form-mid layui-word-aux layui-font-red" id="showRow1">请直接从excel复制，必须换行</div>
+
+                            </div>
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">编号</label>
+                                <div class="layui-input-block">
+                                    <textarea name="numberList" id="numberList"  required  lay-verify="required" placeholder="1102810
+1102814
+....." class="layui-textarea"></textarea>
+                                </div>
+                                <div class="layui-form-mid layui-word-aux layui-font-red"  id="showRow2">请直接从excel复制，必须换行 【如果只有一条数据，则替换部分全部相同】</div>
+
+                            </div>
+                            <div class="layui-form-item" style="    display: flex; justify-content: center">
+                                <div class="layui-input-block">
+                                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                                </div>
+                                <div id="downFile">
+<!--                                    <a href="/bat/rename.bat"  download="bat" class="layui-btn layui-btn-radius layui-btn-danger">下载bat文件</a>-->
+<!--                                    <a href="/bat/rename.txt"  download="txt" class="layui-btn layui-btn-radius layui-btn-normal">下载bat文件</a>-->
+                                </div>
+
+                            </div>
+                        </form>
+                </div>
+            </div>
+
+        </div>
+        <div class="layui-col-md7">
+            <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this"><b>更新结果表格</b></li>
+                    <li><b>生成txt以及bat文件内容</b></li>
+                    <li><b>使用说明</b></li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <table class="layui-hide " id="test" lay-filter="test"></table>
+                    </div>
+                    <div class="layui-tab-item ">
+<!--                        <button type="button" class="layui-btn  layui-btn-sm" onclick="copyTxtContent()">复制copy</button>-->
+                        <div id="txtContent" style="padding: 1rem; border-radius: 5px; background: aliceblue;">
+                            为了在不下载的情况下检查文本内容是否正确，此处会显示提交成功后生成的txt文件内容
+                        </div>
+                    </div>
+                    <div class="layui-tab-item" style="height: 600px; overflow-y: auto" id="layer-photos">
+                        <p>本网页只生成批量修改的bat命令，临时搭建的平台，如需更多功能，请联系开发者</p>
+                        <p>一般情况可直接下载bat文件，将bat文件移至需要批量修改名称的文件夹下，<b class="text-danger">双击即可</b></p>
+                        <p>部分win系统在双击bat文件后，会提示可运行或不运行弹窗，请放心并且允许运行</p>
+                        <p class="text-danger">若bat文件不可以用, 请下载txt文件，将txt文件【另存为】后缀名改为bat，编码格式为ANSI</p>
+                        <img class="border border-dark rounded " style="width: 50%;"  src="https://img-blog.csdnimg.cn/a4af4c6142f34fd194600c388dbca34e.png">
+                        <img class="border border-dark rounded"  style="width: 50%;" src="https://img-blog.csdnimg.cn/c65b8d5a6e9f43d58f7c45ae6df2408d.png">
+                        <br>
+                        <h2>使用例子截图【点击图片放大查看】</h2>
+                        <h3 class="text-dark">匹配项填写的情况下，系统会替换所有符合的数据</h3>
+                        <img  class="border border-dark rounded"   src="/img/e1.jpg">
+                        <h3 class="text-dark">匹配项没有填写的情况下，系统会替换第一个下划线之前的名称</h3>
+
+                        <img  class="border border-dark rounded"   src="/img/eg12.jpg">
+                        <h3 class="text-dark">编号只有一个的情况下，系统会替换第一个下划线之前的名称</h3>
+
+                        <img  class="border border-dark rounded"   src="/img/eg13.jpg">
+                        <br>
+                        <img  class="border border-dark rounded"   src="/img/e2.jpg">
+
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script src="https://pv.sohu.com/cityjson?ie=utf-8"></script>
+<script th:inline="none">
+    var str = "<div>当前位置："+returnCitySN["cip"]+','+returnCitySN["cname"]+"</div>";
+    str += "<div> &nbsp;&nbsp; 当前时间："+new Date()+"</div>"
+    $("#ipaddress").html(str)
+    var submitFlag = false
+    layer.photos({
+        photos: '#layer-photos'
+        ,anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+    });
+
+    layui.use(['form','table'], function(){
+        var form = layui.form;
+        var table = layui.table;
+        //监听提交
+        form.on('submit(formDemo)', function(data){
+            if(submitFlag) return false;
+            submitFlag = true;
+           console.log(JSON.stringify(data.field));
+           if(data.field.match === "" ||  data.field.match === null) {
+               layer.confirm('匹配项未填写,那么匹配的部分会默认从第一个"_"下划线之前的内容',{
+                   btn:['确定','取消'],
+                   cancel:function(index, layero){
+                       submitFlag = false;
+                   }
+               },function () {
+                   if(row2 >1 && ( row2 !== row1)) {
+                       layer.msg("数据不等长，请检查", {time: 3000, icon: 2})
+                       submitFlag = false;
+                   }else uploadResuest(data)
+               },function(){
+                   submitFlag = false;
+               });
+           }else{
+               if(row2 >1 && ( row2 !== row1)) {
+                   layer.msg("数据不等长，请检查", {time: 3000, icon: 2})
+                   submitFlag = false;
+               }else uploadResuest(data)
+           }
+            return false;
+
+        });
+        function uploadResuest(data){
+            var url = "/helper/produce/bat";
+            ajaxPost(url, JSON.stringify(data.field), function (data) {
+                submitFlag = false;
+                if (data.code == 200) {
+                    layer.msg("生成bat文件成功", {time: 3000, icon: 1})
+                    console.log(data.data);
+                    var str = '  <a target="blank"  download="batfile.bat" href="'+data.data.bat+'" class="layui-btn layui-btn-radius layui-btn-danger">下载bat文件</a>';
+                    str += '  <a  target="blank"  download="txtfile.txt" href="'+data.data.txt+'" class="layui-btn  layui-btn-radius layui-btn-normal">下载txt文件</a>';
+                    $("#downFile").html(str);
+                    var st2 = "";
+                    for(var i =0;i<data.data.txtContent.length;i++){
+                        st2 += "<p>"+data.data.txtContent[i]+"</p>"
+                    }
+                    $("#txtContent").html(st2);
+                    table.render({
+                        elem: '#test'
+                        ,url: "/helper/queryAll"
+                        ,page: true
+                        ,limit:100
+                        ,limits:[50,100]
+                        ,cols: [[
+                            {field:'source_file', title:'原文件', width:400, fixed: 'left', unresize: true}
+                            ,{field:'new_file', title:'新文件', width:300}
+                            ,{field:'file_no', title:'文件编号', width:100}
+                            ,{field:'create_time', title:'创建时间', width:250}
+                        ]]
+                    });
+
+                } else {
+                    layer.open({
+                        title: '生成bat文件失败'
+                        ,content:data.msg
+                    });
+                }
+            });
+
+        }
+
+
+    });
+
+    $('#sourceList').bind('input propertychange', function() {
+        getRow(1)
+    });
+
+    $('#numberList').bind('input propertychange', function() {
+        getRow(2)
+    })
+    var row1 = 0;
+    var row2 = 0;
+
+    function getRow(type) {
+        if (type === 1) {
+            row1 = $("#sourceList").val().trim().split("\n").length
+            if($("#sourceList").val() === ""){
+                $("#showRow1").html("请直接从excel复制，必须换行")
+                return
+            }
+            var str = "目前有"+row1+"行数据"
+            $("#showRow1").html(str)
+        } else if (type === 2) {
+            row2 = $("#numberList").val().trim().split("\n").length
+            if($("#numberList").val() === ""){
+                $("#showRow2").html("请直接从excel复制，必须换行 【如果只有一条数据，则替换部分全部相同】")
+                return
+            }
+            var str = "目前有"+row2+"行数据"
+            $("#showRow2").html(str)
+        }
+    }
+
+    function copyTxtContent(){
+        var content = $("#txtContent").text()
+        if(content === "" || content === null) return;
+        console.log(content)
+        copyText(content);
+
+    }
+    function copyText(str) {
+        $('#copy').text(str).show();
+        let ele = $("#copy");
+        ele.select();
+        document.execCommand('copy', false, null);
+        $('#copy').hide();
+        layer.msg("复制成功", {time: 3000, icon: 1});
+    }
+</script>
+
+</body>
+</html>

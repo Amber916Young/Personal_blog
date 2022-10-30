@@ -3,9 +3,20 @@ server:
 #  session-timeout: 60 # session 超时时间/分钟，默认是30
 #  tomcat:
 #    uri-encoding: utf-8 # 设置tomcat编码
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css,image/jpeg
 spring:
   application:
     name: yang-admin
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      enabled: true
+      discovery:
+        serviceName: ${spring.application.name}    # 注册到consul的服务名称
+        health-check-interval: 300s
   servlet:
     multipart:
       max-file-size: 100MB
@@ -13,7 +24,8 @@ spring:
   boot:
     admin:
       client:
-        url: "http://wwww.youngbird97.top"
+        url: "http://localhost:8000"
+
   master:
     datasource:
       name: druidDataSource
@@ -60,19 +72,23 @@ spring:
         pool-prepared-statements: true
         max-open-prepared-statements: 50
         max-pool-prepared-statement-per-connection-size: 20
-  cloud:
-    consul:
-      host: localhost
-      port: 8500
-      discovery:
-        serviceName: ${spring.application.name}	# 注册到consul的服务名称
+#  cloud:
+#    consul:
+#      host: localhost
+#      port: 8500
+#      enabled: true
+#      discovery:
+#        serviceName: ${spring.application.name}	# 注册到consul的服务名称
+#        enabled: true
+#        prefer-ip-address: truespring.thymeleaf.mode=LEGACYHTML5
+
   thymeleaf:
     cache: false
     prefix:  classpath:/templates/
     check-template-location: true
     suffix: .html
     encoding: utf-8
-    mode: HTML
+    mode: LEGACYHTML5
     #这个是关键，放开springboot对静态资源的拦截
     mvc:
       static-path-pattern: /static/**
